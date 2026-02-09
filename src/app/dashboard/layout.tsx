@@ -8,7 +8,7 @@ export default function DashboardLayout({
   return (
     <section className="flex gap-6">
       <Sidebar />
-      <div className="flex-1 space-y-4">{children}</div>
+      <div className="flex-1 space-y-6">{children}</div>
     </section>
   );
 }

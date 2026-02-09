@@ -7,13 +7,24 @@ export default function Header() {
         <span className="text-lg font-semibold">My Next App</span>
         <ul className="flex gap-4 text-sm font-medium">
           <li>
-            <Link href="/">Home</Link>
+            <Link href="/" prefetch>
+              Home
+            </Link>
           </li>
           <li>
-            <Link href="/about">About</Link>
+            <Link href="/about" prefetch>
+              About
+            </Link>
           </li>
           <li>
-            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/dashboard" prefetch>
+              Dashboard
+            </Link>
+          </li>
+          <li>
+            <Link href="/blog" prefetch>
+              Blog
+            </Link>
           </li>
         </ul>
       </nav>
