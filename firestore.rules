@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Feedback collection rules example.
+    match /feedback/{feedbackId} {
+      // Everyone can read all feedback documents.
+      allow read: if true;
+
+      // Allow creating new feedback documents with strict validation.
+      allow create: if
+        // Only expected fields are allowed.
+        request.resource.data.keys().hasOnly(['name', 'message', 'createdAt']) &&
+        // Name and message must be non-empty strings.
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() > 0 &&
+        // createdAt must be an integer timestamp (Date.now()).
+        request.resource.data.createdAt is int;
+
+      // Updates and deletes are forbidden from the client.
+      allow update, delete: if false;
+    }
+  }
+}
+

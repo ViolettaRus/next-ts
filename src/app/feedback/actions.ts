@@ -1,5 +1,27 @@
 'use server';
 
+import { adminDb } from '@/lib/firebase/admin';
+import { revalidatePath } from 'next/cache';
+
+export async function submitFeedback(formData: FormData) {
+  const name = formData.get('name')?.toString().trim();
+  const message = formData.get('message')?.toString().trim();
+
+  if (!name || !message) {
+    return;
+  }
+
+  await adminDb.collection('feedback').add({
+    name,
+    message,
+    createdAt: Date.now(),
+  });
+
+  revalidatePath('/feedback');
+}
+
+'use server';
+
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
