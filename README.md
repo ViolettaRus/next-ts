@@ -18,6 +18,8 @@
   - `Blog` (`/blog`, `/blog/[id]`)
   - `Users` (`/users`)
   - `Profile` (`/profile`)
+  - `Feedback` (`/feedback`)
+  - `Posts` (`/posts`)
 - **Nested layouts**:
   - у `Dashboard` есть свой вложенный `layout` с `Sidebar`, который отображается только на `/dashboard/*`;
   - у `Blog` есть собственный layout с заголовком и описанием раздела.
@@ -54,6 +56,10 @@
   - `users/page.tsx` — серверная страница `Users` с SSR и передачей данных в клиентский поиск.
   - `users/UserSearch.tsx` — Client Component с директивой `'use client'`, поиск по имени среди уже загруженных пользователей.
   - `profile/page.tsx` — Client Component с `'use client'`, загрузка данных пользователя на клиенте через `useEffect`.
+  - `feedback/page.tsx` — серверная страница с формой обратной связи и server action `submitFeedback`.
+  - `feedback/actions.ts` — server action, который принимает `FormData`, делает `POST`‑запрос на API и вызывает `revalidatePath('/feedback')` + редирект с сообщением «Спасибо за отзыв!».
+  - `posts/page.tsx` — серверная страница с SSR‑загрузкой постов, `export const revalidate = 60` и примером использования `fetch` с `next: { revalidate, tags }`.
+  - `posts/actions.ts` — server action `refreshPosts`, который вручную сбрасывает кеш страницы `/posts` с помощью `revalidatePath('/posts')`.
 - `components/`
   - `Header.tsx` — общий хедер с навигацией по разделам.
   - `Sidebar.tsx` — сайдбар, отображается только в `dashboard`‑разделе.
@@ -81,6 +87,24 @@
   - пример: в `profile/page.tsx` `ProfileDetails` не содержит `'use client'`, но рендерится внутри `ProfilePage` и поэтому тоже клиентский.
 - **Примеры, где `use client` не нужен**:
   - серверные страницы с `fetch` и без клиентской интерактивности (`/dashboard`, `/blog`, `/users`).
+
+## Server Actions, revalidatePath / revalidateTag и режимы кэша fetch
+
+- **Server Actions**:
+  - пример: `feedback/actions.ts` (`submitFeedback`) и `posts/actions.ts` (`refreshPosts`);
+  - форма на `/feedback` отправляет `FormData` прямо в server action (без `use client` на странице);
+  - после успешной отправки выполняется `redirect('/feedback?success=1')` и показывается сообщение «Спасибо за отзыв!».
+- **Когда использовать `revalidatePath`**:
+  - когда нужно пере‑валидировать кеш **конкретной страницы или route segment**;
+  - пример: после `submitFeedback` вызывается `revalidatePath('/feedback')`, а после `refreshPosts` — `revalidatePath('/posts')`.
+- **Когда использовать `revalidateTag`**:
+  - когда один и тот же `fetch` с тегом используется на **нескольких страницах или в разных layout'ах**;
+  - пример: если запрос постов пометить как `next: { tags: ['posts'] }`, то вызов `revalidateTag('posts')` обновит все места, где этот тег применён.
+- **Режимы кэширования `fetch` в App Router**:
+  - `cache: 'force-cache'` — максимально агрессивное кэширование; данные берутся из кеша до тех пор, пока не будет вызван `revalidatePath`/`revalidateTag`;
+  - `cache: 'no-store'` — кеш отключён, данные всегда запрашиваются заново (подходит для очень динамических данных);
+  - `next: { revalidate: 60 }` — ISR: данные кешируются и автоматически пере‑валидируются раз в N секунд;
+  - `next: { tags: ['posts'] }` — добавляет тег(и) к запросу, чтобы потом можно было целенаправленно сбрасывать кеш через `revalidateTag`.
 
 ## Запуск и использование
 
