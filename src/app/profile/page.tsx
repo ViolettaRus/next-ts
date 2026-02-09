@@ -20,9 +20,11 @@ export default function ProfilePage() {
   useEffect(() => {
     async function loadUser() {
       try {
-        const res = await fetch(
-          "https://jsonplaceholder.typicode.com/users/1"
-        );
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL ??
+          "https://jsonplaceholder.typicode.com";
+
+        const res = await fetch(`${apiUrl}/users/1`);
 
         if (!res.ok) {
           throw new Error("Failed to fetch profile");
@@ -31,6 +33,7 @@ export default function ProfilePage() {
         const data: User = await res.json();
         setUser(data);
       } catch (err) {
+        console.error("Failed to load user profile", err);
         setError("Не удалось загрузить профиль пользователя");
       } finally {
         setIsLoading(false);
