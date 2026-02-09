@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="space-y-4">
       <h1 className="text-3xl font-bold text-gray-900">Home</h1>
-      <p className="text-gray-700">
+      <p className="text-lg text-gray-900 leading-relaxed max-w-2xl">
         Это главная страница Next.js-приложения с App Router, общим
         layout и навигацией.
       </p>

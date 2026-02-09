@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   },
 };
 
+// Это Server Component: здесь не нужен 'use client', потому что:
+// - мы выполняем fetch на сервере;
+// - не используем React-хуки для клиентской интерактивности;
+// - HTML со списком постов формируется на сервере и отправляется уже готовым.
 export default async function BlogPage() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
     cache: "no-store",
@@ -36,7 +40,7 @@ export default async function BlogPage() {
 
   return (
     <div className="space-y-4">
-      <p className="text-gray-700">
+      <p className="text-base text-gray-900 leading-relaxed">
         Статьи загружаются на сервере из JSONPlaceholder и отображаются как
         список ссылок.
       </p>

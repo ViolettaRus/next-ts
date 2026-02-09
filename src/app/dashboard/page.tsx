@@ -23,7 +23,7 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="mb-4 text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mb-4 text-gray-700">
+        <p className="mb-4 text-base text-gray-900 leading-relaxed">
           Данные загружаются на сервере из JSONPlaceholder
           с использованием переменной окружения.
         </p>
